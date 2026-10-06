@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#101418">
+    <meta name="description" content="0から100を選び、平均値の0.8倍に近づけるスマホ向けパーティーゲーム。">
+    <title>Tenbin Game</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <main class="app">
+      <section id="setup-screen" class="screen setup-screen">
+        <div class="title-block">
+          <p class="eyebrow">single phone party game</p>
+          <h1>Tenbin Game</h1>
+          <p class="lead">0から100を選び、全員の平均値に0.8をかけた値へ一番近い人が生き残る。</p>
+        </div>
+
+        <form id="setup-form" class="panel">
+          <div class="field-row">
+            <label for="player-count">参加人数</label>
+            <div class="stepper">
+              <button class="icon-button" type="button" id="decrease-players" aria-label="人数を減らす">-</button>
+              <output id="player-count-label" for="player-count">4</output>
+              <button class="icon-button" type="button" id="increase-players" aria-label="人数を増やす">+</button>
+            </div>
+            <input id="player-count" type="range" min="2" max="10" value="4">
+          </div>
+
+          <div id="player-name-list" class="name-list" aria-label="プレイヤー名"></div>
+
+          <button class="primary-button" type="submit">ゲーム開始</button>
+        </form>
+
+        <details class="rules">
+          <summary>ルール</summary>
+          <ul>
+            <li>各プレイヤーは0から100までの整数を選ぶ。</li>
+            <li>同じ数字が1組でもあれば、そのラウンドは無効。全員-1点。</li>
+            <li>通常は平均値 x 0.8 に一番近い人が勝者。勝者は得点変化なし。</li>
+            <li>一番近い人が複数いる場合は無効。全員-1点。</li>
+            <li>勝者がニアピン範囲なら、勝者以外は-2点。</li>
+            <li>2人戦で0と100が出た場合だけ、100を選んだ人が勝者。</li>
+            <li>-10点以下になった人は次のラウンドから脱落。</li>
+          </ul>
+        </details>
+      </section>
+
+      <section id="pass-screen" class="screen pass-screen hidden" aria-live="polite">
+        <div class="round-bar">
+          <span id="round-label">Round 1</span>
+          <button id="show-scoreboard" class="ghost-button" type="button">得点</button>
+        </div>
+
+        <div class="handoff-card">
+          <p class="eyebrow">hand the phone to</p>
+          <h2 id="handoff-player">プレイヤー1</h2>
+          <p id="handoff-note">本人だけが画面を見てください。</p>
+          <button id="ready-button" class="primary-button" type="button">入力する</button>
+        </div>
+      </section>
+
+      <section id="input-screen" class="screen input-screen hidden">
+        <div class="round-bar">
+          <span id="input-round-label">Round 1</span>
+          <span id="input-progress">1 / 4</span>
+        </div>
+
+        <form id="choice-form" class="choice-panel">
+          <label class="choice-label" for="choice-number">
+            <span id="choice-player">プレイヤー1</span>
+            <span>0から100の整数</span>
+          </label>
+          <input id="choice-number" class="number-input" type="number" min="0" max="100" step="1" inputmode="numeric" value="50" required>
+          <input id="choice-range" class="choice-range" type="range" min="0" max="100" step="1" value="50">
+          <div class="quick-picks" aria-label="クイック選択">
+            <button type="button" data-pick="0">0</button>
+            <button type="button" data-pick="25">25</button>
+            <button type="button" data-pick="50">50</button>
+            <button type="button" data-pick="75">75</button>
+            <button type="button" data-pick="100">100</button>
+          </div>
+          <button class="primary-button" type="submit">決定して隠す</button>
+        </form>
+      </section>
+
+      <section id="result-screen" class="screen result-screen hidden">
+        <div class="round-bar">
+          <span id="result-round-label">Round 1</span>
+          <button id="result-scoreboard-button" class="ghost-button" type="button">得点</button>
+        </div>
+
+        <article class="result-card">
+          <p id="result-type" class="result-type">Result</p>
+          <h2 id="result-title">勝者</h2>
+          <p id="result-summary"></p>
+          <div id="result-stats" class="stat-grid"></div>
+        </article>
+
+        <div id="choice-reveal" class="choice-reveal"></div>
+        <div id="elimination-list" class="elimination-list"></div>
+
+        <button id="next-round-button" class="primary-button" type="button">次のラウンドへ</button>
+        <button id="back-to-setup" class="text-button" type="button">最初からやり直す</button>
+      </section>
+
+      <section id="game-over-screen" class="screen game-over-screen hidden">
+        <div class="winner-panel">
+          <p class="eyebrow">game over</p>
+          <h2 id="game-over-title">勝者</h2>
+          <p id="game-over-summary"></p>
+          <button id="restart-button" class="primary-button" type="button">新しいゲーム</button>
+        </div>
+      </section>
+
+      <dialog id="score-dialog" class="score-dialog">
+        <form method="dialog">
+          <div class="dialog-head">
+            <h2>得点</h2>
+            <button class="icon-button" value="close" aria-label="閉じる">x</button>
+          </div>
+          <div id="score-list" class="score-list"></div>
+        </form>
+      </dialog>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
